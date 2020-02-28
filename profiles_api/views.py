@@ -1,7 +1,55 @@
 from rest_framework.views import APIView
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from profiles_api import serilizers
+
+
+class HelloViewSet(viewsets.ViewSet):
+    """Test API ViewSet"""
+    serilizer_class = serilizers.HelloSerilizers
+
+    def list(self, request):
+        """return a hello message"""
+        a_viewset = [
+            'Uses action (list, create, retrive, updatem, partioal_update',
+            'Automaticly more functionality with less code',
+            'provide more function with less code',
+        ]
+        return Response({'message': 'Hello', 'a_viewset': a_viewset})
+
+    def create(self, request):
+        """create a new hello message"""
+        serilizer = self.serilizer_class(data=request.data)
+        if serilizer.is_valid():
+            name = serilizer.validated_data.get('name')
+            message = f'Hello {name}'
+            return Response({'message': message})
+        else:
+            return Response(
+                serilizer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+    def retrieve(self, request, pk=None):
+        """handle getting an object by its id"""
+        return Response({'http_method': 'GET'})
+
+    def update(self, request, pk=None):
+        """handle update an object"""
+        return Response({'http_method': 'PUT'})
+
+    def partial_update(self, request, pk=None):
+        """handle updating part of object"""
+        return Response({'http_method': 'PATCH'})
+
+    def destroy(self, request, pk=None):
+        """handle removing an object"""
+        return Response({'http_method': 'DELETE'})
+
+
+
+
 
 
 class HelloApiView(APIView):
